@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="V3.0.0" author="bzh">
+        <comment>修改后台管理员账号及密码</comment>
+        <sql>
+            update sys_user set  nb_login_name='admin' ,nb_password='792b0e4ca2584a58b1b3de743d9f07dbcd3f94b9c567e4bbb21c9d357138f70d' where nb_id=1
+        </sql>
+    </changeSet>
+</databaseChangeLog>

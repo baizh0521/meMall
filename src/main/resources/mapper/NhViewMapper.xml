@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingyee.me.mapper.NhViewMapper">
+
+    <select id="selectDataByCondition" resultType="com.kingyee.me.domain.ViewData">
+        SELECT
+        nuser.nu_login_name,
+        nuser.nu_hospital,
+        nuser.nu_dept,
+        v.*
+        FROM
+        nh_view v
+        LEFT JOIN nh_user nuser ON v.nv_user_id = nuser.nu_id
+        WHERE 1=1
+        <if test="videoId!=null">
+            AND v.nv_video_id = #{videoId}
+        </if>
+
+        <if test="beginTime!=null &amp; beginTime!=''">
+            AND v.nv_create_time &gt;= #{beginTime}
+        </if>
+
+        <if test="endTime!=null &amp; endTime!=''">
+            AND v.nv_create_time &lt;= #{endTime}
+        </if>
+    </select>
+
+</mapper>

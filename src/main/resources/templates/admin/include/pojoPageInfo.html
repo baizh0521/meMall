@@ -1,0 +1,131 @@
+#set(act = act??"")
+#set(formName = formName??"")
+#set(submitType = submitType??"")
+#set(contentId = contentId??"content")
+#set(totalPage = page.getPages())
+
+#if(page != null)
+#set(countRows = page.getTotal())
+#set(rowsPerPage = page.getSize())
+
+#set(nowPage =  page.getCurrent())
+#if(nowPage <=0)
+#set(nowPage = 1)
+#end
+
+#set(size = 3)
+#set(firstDisplayPage =  nowPage-size)
+#set(lastDisplayPage =  nowPage+size)
+
+#if(firstDisplayPage <=0)
+#set(firstDisplayPage = 1)
+#end
+#if(lastDisplayPage > totalPage)
+#set(lastDisplayPage = totalPage)
+#end
+#end
+<script type="text/javascript">
+    var nowPage = #(nowPage);
+    var objForm,formId;
+    if("#(formName)" == "") {
+        objForm = document.forms[0];/** 获取第一个表单*/
+        formId = $(document.forms[0]).attr('id');
+    }else {
+        objForm = eval("document.#(formName)");
+        formId = "#(formName)";
+    }
+    var submitType = "#(submitType)";
+    var contentId = "#(contentId)";
+
+    $(function(){
+        /** 每页显示几条 start */
+        var rowsPerPage = $("#size").val()
+        $("#rows").val(rowsPerPage);
+        //回车
+        $("#rows").keydown(function(e){
+            if(e.keyCode==13){
+                $("#current").val(1);
+                $("#size").val($("#rows").val());
+                if(submitType && submitType == 'ajax'){
+                    $('#' + contentId).load("#(act)",$('#' + formId).serialize());
+                }else{
+                    objForm.target = "_self";
+                    objForm.submit();
+                }
+            }
+        });
+        /** 每页显示几条 end*/
+    })
+
+
+    function goPage(toPage, strAction, objForm) {
+        var current = document.getElementById("current");
+        if(current) {
+            current.value = toPage;
+        }
+        var form = objForm;
+        if(!form) {
+            form = document.forms[0];
+        }else{
+            form = eval("document."+objForm);
+        }
+
+        if(strAction != null && strAction != "null" && strAction != ''){
+            form.action = strAction;
+        }
+
+        if(submitType && submitType == 'ajax'){
+            formId = form.id;
+            $('#' + contentId).load(strAction,$('#' + formId).serialize());
+        }else{
+            //form.method = "post";
+            form.target = "_self";
+            form.submit();
+        }
+    }
+</script>
+
+<div class="row">
+    <div class="col-md-5">
+        <nav>
+            <ul class="pagination">
+                #if(totalPage > 1 && nowPage > 1)
+                <li><a href='javascript:goPage(1, "#(act)", "#(formName)")' aria-label="Previous"><span aria-hidden="true">&lt;&lt;</span></a></li>
+                <li><a href='javascript:goPage(#(nowPage - 1), "#(act)", "#(formName)")' aria-label="Previous"><span aria-hidden="true">&lt;</span></a></li>
+                #else
+                <li class="disabled"><a href="javascript:void(0);" aria-label="Previous"><span aria-hidden="true">&lt;&lt;</span></a></li>
+                <li class="disabled"><a href="javascript:void(0);" aria-label="Previous"><span aria-hidden="true">&lt;</span></a></li>
+                #end
+
+                #if(totalPage >= 1)
+                #for(i=firstDisplayPage; i<=lastDisplayPage; i++)
+                #if(i == nowPage)
+                <li class='active'><a href='javascript:void(0);'>#(i)</a></li>
+                #else
+                <li><a href='javascript:goPage(#(i), "#(act)", "#(formName)" )'>#(i)</a></li>
+                #end
+                #end
+
+                #end
+
+                #if(totalPage > 1 && nowPage < totalPage)
+                <li><a href='javascript:goPage(#(nowPage + 1), "#(act)", "#(formName)")'  aria-label="Previous"><span aria-hidden="true">&gt;</span></a></li>
+                <li><a href='javascript:goPage(#(totalPage), "#(act)", "#(formName)")'   aria-label="Previous"><span aria-hidden="true">&gt;&gt;</span></a></li>
+                #else
+                <li class="disabled"><a href="javascript:void(0);" aria-label="Previous"><span aria-hidden="true">&gt;</span></a></li>
+                <li class="disabled"><a href="javascript:void(0);" aria-label="Previous"><span aria-hidden="true">&gt;&gt;</span></a></li>
+                #end
+
+            </ul>
+
+        </nav>
+
+    </div>
+    <div class="col-md-3" style="margin-top: 20px;" >
+        <div class="input-group">
+            <span class="input-group-addon">每页显示</span>
+            <input name="rows" id="rows"  class="form-control" />
+            <span class="input-group-addon">条</span>
+        </div>
+    </div>
+</div>

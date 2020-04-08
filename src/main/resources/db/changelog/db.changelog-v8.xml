@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="V8.0.0" author="bzh">
+        <comment>修改专家姓名字段</comment>
+        <sql>
+            alter table nh_video change nv_export_name nv_expert_name  varchar(256) comment '专家姓名';
+        </sql>
+    </changeSet>
+</databaseChangeLog>

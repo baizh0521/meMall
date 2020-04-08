@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="V11.0.0" author="bzh">
+        <comment>视频表增加是否显示字段，已经有的全部设为显示</comment>
+        <addColumn tableName="nh_video">
+            <column name="nv_state"  type="int(11)" remarks="视频是否显示0.不显示 1.显示" afterColumn="nv_order"/>
+        </addColumn>
+        <sql>
+            update nh_video set  nv_state = 1
+        </sql>
+    </changeSet>
+</databaseChangeLog>

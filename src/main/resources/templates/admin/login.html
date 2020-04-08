@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+#@layout_admin()
+
+#define title()
+<title>用户登录</title>
+#end
+
+#define css()
+<style type="text/css">
+    body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #eee;
+    }
+
+    .form-signin {
+        max-width: 330px;
+        padding: 15px;
+        margin: 0 auto;
+        margin-bottom: 10px;
+    }
+
+    .form-signin .form-control {
+        position: relative;
+        font-size: 16px;
+        height: auto;
+        padding: 10px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .form-signin .form-control:focus {
+        z-index: 2;
+    }
+
+    .form-signin input[type="text"] {
+        margin-bottom: -1px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .form-signin input[type="password"] {
+        margin-bottom: 10px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+</style>
+#end
+
+#define main()
+<body>
+<div class="container">
+    <form action="admin/login" method="post" class="form-signin" role="form">
+        <input name="name" type="text" class="form-control" placeholder="用户名" required="required" autofocus="autofocus"/>
+        <input name="password" type="password" class="form-control" placeholder="密码" required="required"/>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+        <p class="sign-desc text-right" style="padding-top: 10px;color: red">#(errMsg)</p>
+    </form>
+</div>
+</body>
+#end

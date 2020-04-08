@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="V10.0.0" author="bzh">
+        <comment>用户表，浏览表增加来源字段</comment>
+        <addColumn tableName="nh_user">
+            <column name="nu_source"  type="varchar(128)" remarks="注册用户来源" afterColumn="nu_dept"/>
+        </addColumn>
+        <addColumn tableName="nh_view">
+            <column name="nv_source"  type="varchar(128)" remarks="浏览用户来源" afterColumn="nv_medicine_id"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

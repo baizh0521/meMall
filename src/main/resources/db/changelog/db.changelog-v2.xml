@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="V2.0.0" author="bzh">
+        <comment>增加点赞表,浏览表，以及用户表中头像，医院和科室</comment>
+        <createTable tableName="nh_click" remarks="用户点赞表">
+            <column name="nc_id" type="bigint" autoIncrement="true" remarks="主键">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nc_user_id" type="bigint(20)" remarks="用户id"/>
+            <column name="nc_medicine_id" type="varchar(128)" remarks="医脉通用户id"/>
+            <column name="nc_video_id" type="bigint(20)" remarks="视频id"/>
+            <column name="nc_create_time" type="bigint(20)" remarks="创建时间"/>
+        </createTable>
+
+        <createTable tableName="nh_view" remarks="用户浏览表">
+            <column name="nv_id" type="bigint" autoIncrement="true" remarks="主键">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nv_user_id" type="bigint(20)" remarks="用户id"/>
+            <column name="nv_medicine_id" type="varchar(128)" remarks="医脉通用户id"/>
+            <column name="nv_video_id" type="bigint(20)" remarks="视频id"/>
+            <column name="ncn_create_time" type="bigint(20)" remarks="创建时间"/>
+        </createTable>
+
+        <addColumn tableName="nh_user">
+            <column name="nu_head_img"  type="varchar(128)" remarks="头像" afterColumn="nu_medicine_id"/>
+            <column name="nu_hospital"  type="varchar(128)" remarks="医院" afterColumn="nu_head_img"/>
+            <column name="nu_dept"  type="varchar(128)" remarks="科室" afterColumn="nu_hospital"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="V4.0.0" author="bzh">
+        <comment>增加浏览表中页面停留时长，视频观看时长，视频播放时长</comment>
+        <addColumn tableName="nh_view">
+            <column name="nv_stay_time"  type="bigint(20)" remarks="页面停留时长" afterColumn="nv_video_id"/>
+            <column name="nv_view_time"  type="bigint(20)" remarks="视频观看时长" afterColumn="nv_stay_time"/>
+            <column name="nv_play_time"  type="bigint(20)" remarks="视频播放时长" afterColumn="nv_view_time"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

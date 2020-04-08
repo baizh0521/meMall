@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+#@layout_admin()
+
+#define title()
+<title>捷恪卫</title>
+#end
+
+#define css()
+<style>
+    .layui-table th {
+        text-align: center;
+    }
+
+    .layui-table thead tr {
+        background-color: rgba(87, 98, 164, 1);
+        color: #fff;
+    }
+
+    .icon-ok {
+        font-weight: bold;
+        font-size: 30px;
+        color: green;
+    }
+
+    .icon-no {
+        font-weight: bold;
+        font-size: 30px;
+        color: red;
+    }
+</style>
+#end
+#define main()
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header" style="background-color: rgba(87, 98, 164, 1);">
+        <div class="layui-logo" style="width: 400px">
+            <span style="font-size: 24px;color: #fff">捷恪卫</span>
+        </div>
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                    <li class="layui-nav-item"><a href="admin/video/list">视频管理</a></li>
+                    <li class="layui-nav-item"><a href="admin/videoLog/list">视频浏览点赞记录导出</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="layui-body" style="top: 50px">
+        <table class="layui-hide" lay-filter="videoTable" id="video"></table>
+    </div>
+</div>
+<script type="text/html" id="toolbarDemo">
+    <form action="admin/videoLog/list" name="searchForm" id="searchForm" method="post">
+        视频id：<input type="text" id="videoId" name="videoId" value="#(videoId??)" class="form-control form-control-sm" placeholder="视频编号"
+                    style="min-width: 270px;"/>
+        视频浏览/点赞时间:<input type="text" name="beginTime" id="beginTime" lay-verify="date"
+                      placeholder="yyyy-MM-dd"
+                      autocomplete="off">-
+        <!--class="layui-input"-->
+        <input type="text" name="endTime" id="endTime" lay-verify="date"
+               placeholder="yyyy-MM-dd"
+               autocomplete="off"
+        >
+
+        <button type="button" class="layui-btn layui-btn-sm" onclick="exportLog(1)">浏览导出</button>
+        <button type="button" class="layui-btn layui-btn-sm" onclick="exportLog(2)">点赞导出</button>
+        (选择时间直接导出即可，暂不提供查询)
+    </form>
+</script>
+
+<script type="text/html" id="barDemo">
+</script>
+<script>
+    var videoId = "#(videoId??)";
+    var minDurationTime = "#(minDurationTime??)";
+    var maxDurationTime = "#(maxDurationTime??)";
+    var beginTime = "#(beginTime??)";
+    var endTime = "#(endTime??)";
+    layui.use(['table', 'form', 'util', 'laydate'], function () {
+        var table = layui.table;
+        var util = layui.util;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        table.render({
+            elem: '#video'
+            , url: 'admin/videoLog/listAjax'
+            , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            , defaultToolbar: {}
+            , where: {
+                videoId: videoId,
+                minDurationTime: minDurationTime,
+                maxDurationTime: maxDurationTime,
+                beginTime: beginTime,
+                endTime: endTime
+            }
+            , page: {
+                theme: '#5762A4'
+            }
+            , autoSort: false
+            , loading: false
+            , cols: [[
+            ]]
+        });
+        //监听排序事件
+        table.on('sort(videoTable)', function (obj) {
+            table.reload('video', {
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                , where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    field: obj.field //排序字段
+                    , order: obj.type //排序方式
+                }
+            });
+        });
+        //日期
+        laydate.render({
+            elem: '#beginTime'
+            , value: '#(beginTime??)'
+            , isInitValue: true
+        });
+        laydate.render({
+            elem: '#endTime'
+            , value: '#(endTime??)'
+            , isInitValue: true
+        });
+    });
+
+    function exportLog(type) {
+        var videoId = $('#videoId').val();
+        var beginTime = $('#beginTime').val();
+        var endTime = $('#endTime').val();
+        var url = "admin/videoLog/exportLog?type="+type;
+        if (videoId != null && videoId !== "") {
+            url = url + "&videoId=" + videoId;
+        }
+        if (beginTime != null && beginTime !== "") {
+            url = url + "&beginTime=" + beginTime;
+        }
+        if (endTime != null && endTime !== "") {
+            url = url + "&endTime=" + endTime;
+        }
+        window.location.href = url;
+    }
+</script>
+</body>
+#end

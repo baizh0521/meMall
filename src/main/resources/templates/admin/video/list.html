@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+#@layout_admin()
+
+#define title()
+<title>捷恪卫</title>
+#end
+
+#define css()
+<style>
+    .layui-table th {
+        text-align: center;
+    }
+
+    .layui-table thead tr {
+        background-color: rgba(87, 98, 164, 1);
+        color: #fff;
+    }
+
+    .icon-ok {
+        font-weight: bold;
+        font-size: 30px;
+        color: green;
+    }
+
+    .icon-no {
+        font-weight: bold;
+        font-size: 30px;
+        color: red;
+    }
+</style>
+#end
+#define main()
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header" style="background-color: rgba(87, 98, 164, 1);">
+        <div class="layui-logo" style="width: 400px">
+            <span style="font-size: 24px;color: #fff">捷恪卫</span>
+        </div>
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                    <li class="layui-nav-item"><a href="admin/video/list">视频管理</a></li>
+                    <li class="layui-nav-item"><a href="admin/videoLog/list">视频浏览点赞记录导出</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="layui-body" style="top: 50px">
+        <table class="layui-hide" lay-filter="videoTable" id="video"></table>
+    </div>
+</div>
+<script type="text/html" id="toolbarDemo">
+    <form action="admin/video/list" class="layui-form layui-col-md12 x-so" name="searchForm" id="searchForm"
+          method="post">
+        视频标题 ：
+        <div class="layui-input-inline">
+            <input type="text" id="keyword" name="keyword" value="" class="form-control form-control-sm"
+                   placeholder="视频标题"/>
+        </div>
+        <button type="button" id="search" class="layui-btn layui-btn-sm" lay-submit
+                lay-filter="search"><i class="layui-icon">&#xe615;</i>
+        </button>
+        <button type="button" class="layui-btn layui-btn-sm" onclick="javascript:window.location.href='admin/video/edit'">添加</button>
+    </form>
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs"
+       onclick="javascript:window.location.href='admin/video/edit?id={{ d.nvId }}'">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script>
+    layui.use(['table', 'form', 'util'], function () {
+        var table = layui.table;
+        var form = layui.form;
+        var util = layui.util;
+        table.render({
+            id: "tableReload"
+            , elem: '#video'
+            , url: 'admin/video/listAjax'
+            , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            , defaultToolbar: {}
+            , page: {
+                theme: '#5762A4'
+            }
+            // , size: 'lg'
+            , autoSort: false
+            , loading: false
+            , cols: [[
+                {
+                    title: '序号', width: 90, fixed: true, align: 'center', templet: function (d) {
+                        return d.LAY_INDEX;
+                    }
+                }
+                , {field: 'nvVideoTitle', title: '标题'}
+                , {field: 'nvVideoVid', width: 200, title: '视频Vid'}
+                , {field: 'nvPptName', width: 150, title: 'ppt文件名称'}
+                , {field: 'nvPptNum', width: 150, title: 'ppt总页数'}
+                , {field: 'nvClickNum', width: 110, title: '点赞次数', align: 'center', sort: true}
+                , {field: 'nvOrder', width: 100, title: '排序', align: 'center', sort: true}
+                , {
+                    field: 'nvState', width: 150, title: '是否显示', align: 'center', sort: true,
+                    templet: function (d) {
+                        if(d.nvState===1){
+                            return '是';
+                        }else {
+                            return '否';
+                        }
+
+                    }
+                }
+                , {
+                    field: 'nvCreateTime', width: 120, title: '创建日期', align: 'center', sort: true,
+                    templet: function (d) {
+                        if (d.nvCreateTime) {
+                            return util.toDateString(d.nvCreateTime, 'yyyy-MM-dd');
+                        } else {
+                            return '';
+                        }
+                    }
+                }, {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 120}
+            ]]
+        });
+        //监听排序事件
+        table.on('sort(videoTable)', function (obj) {
+            table.reload('tableReload', {
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                , where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    field: obj.field //排序字段
+                    , order: obj.type //排序方式
+                }
+            });
+        });
+        //查询
+        form.on('submit(search)', function (data) {
+            var formData = data.field;
+            console.debug(formData);
+            var videoTitle = formData.keyword;
+            table.reload('tableReload', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                where: {
+                    keyword: videoTitle
+                },
+                method: 'get',
+                // contentType: "application/json;charset=utf-8",
+                url: 'admin/video/listAjax',
+            });
+            $("#keyword").val(videoTitle);
+            return false;
+        });
+
+
+        //监听行工具事件
+        table.on('tool(videoTable)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    $.ajax({
+                        type: "get",
+                        url: "admin/video/del",
+                        data: {
+                            id: data.nvId,//此处是根据id查询此id是否被删除，故将id传向后端
+                        },
+                        success: function (ev) {
+                            if (ev.success) {
+                                obj.del();
+                                layer.close(index);
+                            } else {
+                                layer.alert(ev.msg);
+                            }
+                        }
+
+                    });
+                });
+            }
+        });
+
+    });
+</script>
+</body>
+#end

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+#@layout_web()
+
+#define title()
+<title>MPN精英病例播咖 #(video.nvExpertName??)</title>
+#end
+
+#define css()
+<style>
+    .iframeCss {
+        display: block;
+        border: medium none;
+        outline: none;
+        vertical-align: bottom;
+        width: 100%;
+        min-height: 200px;
+    }
+
+</style>
+#end
+#define main()
+<body>
+<input value="#(view.nvId)" id="viewId" type="hidden"/>
+<input value="#(video.nvId)" id="videoId" type="hidden"/>
+<input value="#(video.nvExpertName)" id="nvExpertName" type="hidden"/>
+<input value="#(video.nvCreateTime)" id="videoTime" type="hidden"/>
+<div class="detail_box">
+    <div class="video_box">
+        <iframe src="web/video/#(video.nvVideoVid??)" class="iframeCss" scrolling="no" frameborder="0"
+                align=""></iframe>
+    </div>
+    <div class="detail_top">
+        <div class="tit">
+            #(video.nvVideoTitle??)
+        </div>
+        <div class="flex-box">
+            <div class="time" id="insertTime">
+                #(timeStr??)
+            </div>
+            <div class="flex-item">
+                <span class="read">#(video.nvViewNum??)</span>
+            </div>
+        </div>
+    </div>
+    <div class="ppt_box">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                #for(image : imageName)
+                <div class="swiper-slide">
+                    <img src= #(image) />
+                </div>
+                #end
+            </div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination"></div>
+            <!-- Add Arrows -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+    <div class="expert_box">
+        <div class="expert_tit">
+            本期大咖
+        </div>
+        <div class="expert_top">
+            <div class="flex-box">
+                <div class="pic">
+                    <img src=#(video.nvExpertImg??)>
+                </div>
+                <div class="flex-item">
+                    <div class="name">
+                        <span>#(video.nvExpertName??)</span>#(video.nvExpertProfessionalTitle??)
+                    </div>
+                    <div>
+                        #(video.nvExpertRank??)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="expert_cont">
+            <div class="infor">
+                #(video.nvExpertInformation??)
+            </div>
+        </div>
+    </div>
+    <div class="like_box" >
+        #if(b)
+        <div class="like_sign  active " id="like_sign" onclick="clickButton()">
+            #(video.nvClickNum??)
+        </div>
+        #end
+        #if(!b)
+        <div class="like_sign" id="like_sign" onclick="clickButton()" >
+            #(video.nvClickNum??)
+        </div>
+        #end
+    </div>
+</div>
+
+<script>
+    var singleVideoPlayTime = 0;
+    var num = 0;
+
+    $(document).ready(function () {
+        var viewId = $("#viewId").val();
+        var timeStr = $("#videoTime").val();
+        var docName = $("#nvExpertName").val();
+        var desc = '诺华肿瘤与医脉通血液科，邀请国内血液病大咖，分享学术“干货”';
+        //视频每3秒发送一次记录   单个视频播放情况
+        setInterval(function () {
+            videoPlayTime(viewId);
+        }, 3000);
+
+        //页面每2秒发送一次页面停留时间记录
+        setInterval(function () {
+            stayTime(viewId);
+            }, 2000);
+            //分享
+        shareCommon("MPN精英病例播咖 "+docName,desc);
+
+        getTimeStr(timeStr)
+    });
+
+    //发送页面停留消息
+    function stayTime(viewId) {
+        $.post('web/updateVideoViewTime', {"viewId": viewId}, function (res) {
+        });
+    }
+    function sendVideoPalyTime(viewId, palyTime) {
+        $.post('web/updateVideoPalyTime', {"viewId": viewId, "palyTime": palyTime}, function (res) {
+        });
+    }
+
+    //视频播放时长，存储到singleVideoPlayTime中，之后通过vodeoPlayTime发送统计
+    function updateVideoPalyTime(obj) {
+        singleVideoPlayTime = obj;
+    }
+    /**
+     *
+     * 发送视频浏览记录
+     */
+    function videoPlayTime(viewId) {
+        var palyTime = singleVideoPlayTime;
+        palyTime = parseInt(palyTime);
+        if (palyTime == null || palyTime == "" || palyTime == undefined) {
+            palyTime = 0;
+        }
+        if (palyTime > 0) {
+            sendVideoPalyTime(viewId, palyTime);
+        }
+    }
+
+    var spaceNum = 100*$(window).width()/750*0.3;
+    console.log(spaceNum);
+    var swiper = new Swiper('.ppt_box .swiper-container', {
+        spaceBetween: spaceNum,
+        pagination: {
+            el: '.swiper-pagination',
+            type: 'progressbar',
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+    });
+
+    //点赞/取消点赞
+    function clickButton() {
+        if(!$("#like_sign").hasClass("active")) {
+        var videoId = $("#videoId").val();
+        $.ajax({
+            url: "web/videoClick",
+            data: {"videoId": videoId},
+            dataType: "json",
+            type: "post",
+            async: false,
+            success: function (data) {
+                if (data.success) {
+                    if (!$("#like_sign").hasClass("active")) {
+                        $("#like_sign").addClass("active");
+                        num = parseInt($("#like_sign").html()) + 1;
+                        $("#like_sign").html(num);
+                    } else {
+                        $("#like_sign").removeClass("active");
+                        num = parseInt($("#like_sign").html()) - 1;
+                        $("#like_sign").html(num);
+                    }
+                }
+                if (!data.success) {
+                    alert("出错！")
+                }
+            }
+        });
+    }
+    }
+
+    function getTimeStr(timeStr) {
+        //时间戳转时间
+        var now = new Date(timeStr);
+        var year = now.getFullYear();
+        var month = now.getMonth() + 1;
+        var date = now.getDate();
+        var hour = now.getHours();
+        var minute = now.getMinutes();
+        var second = now.getSeconds();
+        var time=0;
+        if(month>=10) {
+            time = year + "." + month + "." + date;
+        }else {
+            time = year + ".0" + month + "." + date;
+        }
+        //$("#insertTime").html(time);
+    }
+</script>
+</body>
+#end

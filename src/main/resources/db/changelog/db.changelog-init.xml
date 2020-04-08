@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="V1.0.0" author="gx">
+        <comment>数据库初始化</comment>
+
+        <createTable tableName="sys_user" remarks="管理员表">
+            <column name="nb_id" type="bigint" autoIncrement="true" remarks="主键">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nb_login_name" type="varchar(128)" remarks="用户名"/>
+            <column name="nb_password" type="varchar(128)" remarks="密码"/>
+            <column name="nb_create_time" type="bigint(20)" remarks="创建时间"/>
+            <column name="nb_update_time" type="bigint(20)" remarks="修改时间"/>
+        </createTable>
+
+        <insert tableName="sys_user">
+            <column name="nb_id" valueNumeric="1" />
+            <column name="nb_login_name" value="1"/>
+            <column name="nb_password" value="6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"/>
+        </insert>
+
+        <createTable tableName="nh_user" remarks="用户表">
+            <column name="nu_id" type="bigint" autoIncrement="true" remarks="主键">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nu_login_name" type="varchar(128)" remarks="用户名"/>
+            <column name="nu_medicine_id" type="varchar(128)" remarks="医脉通用户id"/>
+            <column name="nu_create_time" type="bigint(20)" remarks="创建时间"/>
+            <column name="nu_update_time" type="bigint(20)" remarks="修改时间"/>
+        </createTable>
+
+        <createTable tableName="nh_video" remarks="视频表">
+            <column name="nv_id" type="bigint" autoIncrement="true" remarks="视频表主键">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nv_video_title" type="varchar(256)" remarks="视频标题"/>
+            <column name="nv_video_cover_pic_url" type="varchar(1024)" remarks="视频封面图片地址"/>
+            <column name="nv_video_url" type="varchar(1024)" remarks="视频地址"/>
+            <column name="nv_video_vid"  type="varchar(256)" remarks="保利威视频id"/>
+            <column name="nv_video_remark" type="text" remarks="视频描述"/>
+            <column name="nv_expert_img" type="varchar(256)" remarks="专家头像地址"/>
+            <column name="nv_expert_information" type="text" remarks="专家信息描述"/>
+            <column name="nv_ppt_name" type="varchar(256)" remarks="ppt文件夹名称"/>
+            <column name="nv_ppt_num" type="int(11)" remarks="ppt图片总数量"/>
+            <column name="nv_click_num" type="int(11)" remarks="点赞数量"/>
+            <column name="nv_order"  type="int(11)" remarks="排序 越大越靠前"/>
+            <column name="nv_publish_date"  type="varchar(256)" remarks="发布日期"/>
+            <column name="nv_create_time" type="bigint(20)" remarks="视频创建时间"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

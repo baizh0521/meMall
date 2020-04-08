@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+#@layout_web()
+
+#define title()
+<title>捷恪卫-保利威视视频</title>
+#end
+#define css()
+<style>
+    html, body { height:100%; background-color: #ffffff;}
+    body { margin:0; padding:0; overflow:hidden; }
+    #player{width: 100%;height:100%;}
+    video {
+        width: 100%    !important;
+        height: 100%   !important;
+    }
+</style>
+#end
+
+#define js()
+<script src="//player.polyv.net/script/polyvplayer.min.js"></script>
+#end
+
+#define main()
+<body>
+<input type="hidden" id="vid" value="#(vid)"/>
+<div id="player">
+
+</div>
+
+<script>
+    var player = polyvObject('#player').videoPlayer({
+        'vid' : $("#vid").val(),
+        'width':"100%",
+        'height':"100%",
+        'flashvars': {"interaction_img_height":"120"},
+        'forceH5': true
+    });
+
+    setInterval(function(){
+        // 记录视频播放情况
+            var second = 0;
+            if(player.j2s_stayInVideoTime){
+                second = player.j2s_stayInVideoTime();
+            }else{
+                second = player.j2s_realPlayVideoTime();
+            }
+            if(second > 0){
+                parent.updateVideoPalyTime(second);
+            }
+    }, 3000)
+</script>
+</body>
+#end

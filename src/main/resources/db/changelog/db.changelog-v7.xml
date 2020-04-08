@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="V7.0.0" author="bzh">
+        <comment>视频表增加专家姓名字段</comment>
+        <addColumn tableName="nh_video">
+            <column name="nv_export_name"  type="varchar(256)" remarks="专家姓名" afterColumn="nv_video_remark"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

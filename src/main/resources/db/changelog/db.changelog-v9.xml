@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="V9.0.0" author="bzh">
+        <comment>视频表增加视频观看量，专家职称，头衔和字段</comment>
+        <addColumn tableName="nh_video">
+            <column name="nv_view_num"  type="int(11)" remarks="视频观看量" afterColumn="nv_click_num"/>
+            <column name="nv_expert_professional_title"  type="varchar(256)" remarks="专家职称" afterColumn="nv_expert_img"/>
+            <column name="nv_expert_rank"  type="varchar(256)" remarks="专家头衔" afterColumn="nv_expert_professional_title"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

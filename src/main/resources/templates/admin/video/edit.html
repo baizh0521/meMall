@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+#@layout_admin()
+
+#define title()
+<title>捷恪卫</title>
+#end
+
+#define main()
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header" style="background-color: rgba(87, 98, 164, 1);">
+        <div class="layui-logo" style="width: 400px">
+           <span style="font-size: 24px;color: #fff">捷恪卫</span>
+        </div>
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                    <li class="layui-nav-item"><a href="admin/video/list">视频管理</a></li>
+                    <li class="layui-nav-item"><a href="admin/videoLog/list">视频浏览点赞记录导出</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="layui-body">
+        <div id="userForm">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-bottom: 20px;"></fieldset>
+            <form action="admin/video/save" method="post" class="layui-form"  style="white-space:nowrap;">
+                <input type="hidden" name="nvId" id="nvId" value="#(video.nvId??)">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">标题</label>
+                    <div class="layui-input-block" style="width: 450px;">
+                        <input type="text" name="nvVideoTitle" id="nvVideoTitle" lay-verify="required"
+                               class="layui-input" value="#(video.nvVideoTitle??)">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">视频封面</label>
+                    <div style="max-width: 300px;">
+                        <img style="max-width: 250px;" src="#(video.nvVideoCoverPicUrl??)" id="nvVideoCoverPic"></img>
+                        <button type="button" id="nvVideoCoverPicBtn" class="layui-btn layui-btn-normal">上传视频封面</button>
+                        <span >（默认自动提取视频截图,也可上传,比例： 5:3）</span>
+                    </div>
+                    <input type="hidden" name="nvVideoCoverPicUrl" id="nvVideoCoverPicUrl"
+                           value="#(video.nvVideoCoverPicUrl??)">
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">保利威视vid</label>
+                    <div class="layui-input-block" style="width: 450px;">
+                        <input type="text" name="nvVideoVid" id="nvVideoVid" lay-verify="required" class="layui-input"
+                               value="#(video.nvVideoVid??)">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">详情描述</label>
+                    <div class="layui-input-block" style="max-width:600px;">
+                        <textarea name="nvVideoRemark"  id="nvVideoRemark" placeholder="请输入内容" class="layui-textarea" lay-verify="required">#(video.nvVideoRemark??)</textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">专家姓名</label>
+                    <div class="layui-input-block" style="width: 450px;">
+                        <input type="text" name="nvExpertName" id="nvExpertName" lay-verify="required" class="layui-input"
+                               value="#(video.nvExpertName??)">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">专家职称</label>
+                    <div class="layui-input-block" style="width: 450px;">
+                        <input type="text" name="nvExpertProfessionalTitle" id="nvExpertProfessionalTitle" lay-verify="required" class="layui-input"
+                               value="#(video.nvExpertProfessionalTitle??)">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">专家头衔</label>
+                    <div class="layui-input-block" style="width: 450px;">
+                        <input type="text" name="nvExpertRank" id="nvExpertRank" lay-verify="required" class="layui-input"
+                               value="#(video.nvExpertRank??)">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">专家头像</label>
+                    <div style="max-width: 300px;">
+                        <img style="max-width: 250px;" src="#(video.nvExpertImg??)" id="nvExpert"></img>
+                        <button type="button" id="nvExpertImgBtn" class="layui-btn layui-btn-normal">上传头像</button>
+                        <span >（上传比例： 5:3）</span>
+                    </div>
+                    <input type="hidden" name="nvExpertImg" id="nvExpertImg"
+                           value="#(video.nvExpertImg??)">
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">专家信息描述</label>
+                    <div class="layui-input-block" style="max-width:600px;">
+                        <input type="hidden" id="nvExpertInformation" name="nvExpertInformation" value="#(video.nvExpertInformation??)"/>
+                        <!-- 加载编辑器的容器 -->
+                        <script id="container" name="content" type="text/plain" ></script>
+                        <!--<textarea name="nvExpertInformation"  id="nvExpertInformation" placeholder="请输入内容" class="layui-textarea">#(video.nvExpertInformation??)</textarea>-->
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">ppt名称</label>
+                    <div class="layui-input-block" style="width: 450px;">
+                        <input type="text" name="nvPptName" id="nvPptName" class="layui-input" lay-verify="required"
+                               value="#(video.nvPptName??)">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">ppt页数</label>
+                    <div class="layui-input-block" style="width: 450px;">
+                        <input type="text" name="nvPptNum" id="nvPptNum" class="layui-input" lay-verify="required"
+                               value="#(video.nvPptNum??)">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">排序</label>
+                    <div class="layui-input-block" style="width: 450px;">
+                        <input type="number" name="nvOrder" id="nvOrder" lay-verify="required" class="layui-input"
+                               value="#(video.nvOrder??)">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">是否显示</label>
+                    <div class="layui-input-block" style="width: 450px;">
+                        <!--<input type="number" name="nvOrder" id="nvOrder" lay-verify="required" class="layui-input"
+                               value="#(video.nvOrder??)">-->
+                        #if(video==null || video.nvState==0)
+                        <input type="radio" name="nvState" value="0" title="不显示" checked>
+                        <input type="radio" name="nvState" value="1" title="显示" >
+                        #end
+                        #if(video!=null && video.nvState==1)
+                        <input type="radio" name="nvState" value="0" title="不显示" >
+                        <input type="radio" name="nvState" value="1" title="显示" checked>
+                        #end
+                    </div>
+                </div>
+                <fieldset class="layui-elem-field layui-field-title" style="margin-bottom: 20px;"></fieldset>
+                <div class="layui-form-item" style="text-align: center">
+                    <div class="layui-input-block">
+                        <button type="button" class="layui-btn layui-btn-checked"
+                                onclick="javascript:window.location.href='admin/video/list'">取消
+                        </button>
+                        <button type="button" class="layui-btn layui-btn-checked" lay-submit lay-filter="saveBtn" onclick="beforeSubmit()">保存
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    //页面层
+    layui.use(['layer', 'form','upload', 'laydate'], function () {
+        var layer = layui.layer
+            , form = layui.form
+            , upload = layui.upload
+            , util = layui.util
+            , table = layui.table
+            , laydate = layui.laydate;
+
+        form.render();
+        //保存
+        form.on('submit(saveBtn)', function (data) {
+            ue.ready(function() {
+                //获取html内容，返回: <p>hello</p>
+                var contentHtml = ue.getContent();
+                $("#nvExpertInformation").val(contentHtml);
+            });
+            $.ajax({
+                type: "post",
+                url: "admin/video/save",
+                data: data.field,
+                success: function (ev) {
+                    if (ev.success) {
+                        window.location.href = 'admin/video/list';
+                    } else {
+                        layer.alert(ev.msg);
+                    }
+                }
+
+            });
+            return false;
+        });
+
+        //执行实例1
+        var uploadImg = upload.render({
+            elem: '#nvVideoCoverPicBtn' //绑定元素
+            , url: 'admin/upload/uploadPicPc' //上传接口
+            , done: function (res) {
+                var msg=res.msg;
+                if (res.success == true) {
+                    msg="上传成功";
+                    $("#nvVideoCoverPic").attr("src", res.data);
+                    $("#nvVideoCoverPicUrl").attr("value", res.data);
+                }
+                layer.alert(msg);
+            }
+            , error: function () {
+                //请求异常回调
+            }
+        });
+
+        //执行实例2
+        var uploadImg1 = upload.render({
+            elem: '#nvExpertImgBtn' //绑定元素
+            , url: 'admin/upload/uploadPicPc' //上传接口
+            , done: function (res) {
+                var msg=res.msg;
+                if (res.success == true) {
+                    msg="上传成功";
+                    $("#nvExpert").attr("src", res.data);
+                    $("#nvExpertImg").attr("value", res.data);
+                }
+                layer.alert(msg);
+            }
+            , error: function () {
+                //请求异常回调
+            }
+        });
+
+        // 实例化编辑器
+        ue = UE.getEditor('container',{
+            topOffset:50,//浮动时工具栏距离浏览器顶部的高度，用于某些具有固定头部的页面
+            initialFrameHeight: 400
+        });
+        ue.ready(function() {
+            if($("#nvId").val()!= null && $("#nvId").val()!= ""){
+                ue.setContent($("#nvExpertInformation").val());
+            }
+        });
+    });
+
+    //保存
+    function beforeSubmit(){
+        var flag = true;
+        //对编辑器的操作在编辑器ready之后再做
+        ue.ready(function() {
+            //获取html内容，返回: <p>hello</p>
+            var contentHtml = ue.getContent();
+            $("#nvExpertInformation").val(contentHtml);
+        });
+        return flag;
+    }
+
+</script>
+</body>
+#end
